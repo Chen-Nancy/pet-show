@@ -11,6 +11,11 @@ public class CodeConstants {
     public static final int SUCCESS_CODE = 200;
 
     /**
+     * 失败状态码
+     */
+    public static final int ERROR_CODE = 202;
+
+    /**
      * 未登录状态码
      */
     public static final int NO_LOGIN_CODE = 400;
@@ -19,11 +24,6 @@ public class CodeConstants {
      * 资源未找到状态码
      */
     public static final int NOT_FOUND_CODE = 404;
-
-    /**
-     * 失败状态码
-     */
-    public static final int ERROR_CODE = 500;
 
     /**
      * 系统错误状态码

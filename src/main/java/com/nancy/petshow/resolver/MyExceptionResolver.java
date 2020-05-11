@@ -3,18 +3,14 @@ package com.nancy.petshow.resolver;
 import com.nancy.petshow.constants.CodeConstants;
 import com.nancy.petshow.entity.Result;
 import com.nancy.petshow.exception.NoLoginException;
+import com.nancy.petshow.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.HandlerExceptionResolver;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.NoHandlerFoundException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
 /**
@@ -22,8 +18,8 @@ import javax.validation.ConstraintViolationException;
  * @date 2020/5/11 14:38
  */
 @ControllerAdvice
-public class MyExceptionResolver implements HandlerExceptionResolver {
-    private static Logger log = LoggerFactory.getLogger(MyExceptionResolver.class);
+public class MyExceptionResolver {
+    private static final Logger log = LoggerFactory.getLogger(MyExceptionResolver.class);
 
     @ExceptionHandler(NoLoginException.class)
     @ResponseBody
@@ -46,9 +42,9 @@ public class MyExceptionResolver implements HandlerExceptionResolver {
         return new Result(CodeConstants.PARAMETER_ERROR_CODE, "参数错误");
     }
 
-    @ExceptionHandler(NoHandlerFoundException.class)
+    @ExceptionHandler(NotFoundException.class)
     @ResponseBody
-    public Result exceptionResolver(NoHandlerFoundException e) {
+    public Result notFoundExceptionResolver(NotFoundException e) {
         log.error(e.getMessage(), e);
         return new Result(CodeConstants.NOT_FOUND_CODE, "资源未找到");
     }
@@ -58,10 +54,5 @@ public class MyExceptionResolver implements HandlerExceptionResolver {
     public Result exceptionResolver(Exception e) {
         log.error(e.getMessage(), e);
         return new Result(CodeConstants.SYSTEM_ERROR_CODE, "系统错误");
-    }
-
-    @Override
-    public ModelAndView resolveException(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) {
-        return null;
     }
 }

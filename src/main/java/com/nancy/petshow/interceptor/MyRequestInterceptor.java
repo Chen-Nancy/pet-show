@@ -20,15 +20,14 @@ import java.util.List;
  */
 @Component
 public class MyRequestInterceptor implements HandlerInterceptor {
-    private static Logger log = LoggerFactory.getLogger(MyRequestInterceptor.class);
+    private static final Logger log = LoggerFactory.getLogger(MyRequestInterceptor.class);
     /**
      * 无需登录验证的请求集合
      */
-    private static List<String> noLoginUriList;
+    private static final List<String> noLoginUriList;
 
     static {
         noLoginUriList = new ArrayList<>();
-        noLoginUriList.add(UriConstants.ERROR_URI);
         noLoginUriList.add(UriConstants.FILE_SHOW_URI);
         noLoginUriList.add(UriConstants.FILE_DOWNLOAD_URI);
         noLoginUriList.add(UriConstants.LOGIN_URI);

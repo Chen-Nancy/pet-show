@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.Enumeration;
 
 /**
@@ -19,9 +20,9 @@ import java.util.Enumeration;
 @Validated
 @RequestMapping("user")
 public class UserController {
-    @RequestMapping("test")
+    @RequestMapping("main")
     @ResponseBody
-    public Result test(HttpServletRequest request, User user) {
+    public Result test(HttpServletRequest request, @Valid User user) {
         System.out.println("controller=====");
         System.out.println("name=" + user.getName() + "&" + "age=" + user.getAge());
         System.out.println("url=" + request.getRequestURL());
