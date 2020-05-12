@@ -1,9 +1,8 @@
 package com.nancy.petshow.entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import javax.validation.constraints.NotBlank;
 
 /**
  * @author chen
@@ -11,8 +10,6 @@ import javax.validation.constraints.NotBlank;
  */
 @Data
 @ToString
+@NoArgsConstructor
 public class User {
-    @NotBlank
-    private String name;
-    private Integer age;
 }
