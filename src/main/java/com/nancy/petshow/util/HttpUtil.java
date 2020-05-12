@@ -12,18 +12,50 @@ import java.util.Map;
  */
 public class HttpUtil {
     /**
-     * 发送http请求
+     * 发送get请求
      *
      * @param url 请求路径
-     * @param map 请求参数
      * @return
      * @throws IOException
      */
-    public static String httpSend(String url, Map<String, Object> map) throws IOException {
-        return http(url, map);
+    public static String getHttp(String url) throws IOException {
+        BufferedReader br = null;
+        HttpURLConnection connection = null;
+        try {
+            URL u = new URL(url);
+            connection = (HttpURLConnection) u.openConnection();
+            connection.setDoOutput(true);
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
+            br = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+                sb.append("\n");
+            }
+            return sb.toString();
+        } catch (IOException e) {
+            throw new IOException(e);
+        } finally {
+            if (br != null) {
+                br.close();
+            }
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
     }
 
-    private static String http(String url, Map<String, Object> params) throws IOException {
+    /**
+     * 发送post请求
+     *
+     * @param url    请求路径
+     * @param params 请求参数
+     * @return
+     * @throws IOException
+     */
+    public static String postHttp(String url, Map<String, Object> params) throws IOException {
         URL u = null;
         HttpURLConnection con = null;
         StringBuilder sb = new StringBuilder();
@@ -46,7 +78,7 @@ public class HttpUtil {
             con.setDoOutput(true);
             con.setDoInput(true);
             con.setUseCaches(false);
-            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
             bw = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), StandardCharsets.UTF_8));
             bw.write(sb.toString());
             bw.flush();
@@ -59,7 +91,7 @@ public class HttpUtil {
                 builder.append("\n");
             }
             return builder.toString();
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new IOException(e);
         } finally {
             if (bw != null) {
