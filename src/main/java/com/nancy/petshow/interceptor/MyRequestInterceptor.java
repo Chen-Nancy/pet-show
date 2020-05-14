@@ -20,11 +20,11 @@ import java.util.List;
  */
 @Component
 public class MyRequestInterceptor implements HandlerInterceptor {
-    private static final Logger log = LoggerFactory.getLogger(MyRequestInterceptor.class);
+    private static Logger log = LoggerFactory.getLogger(MyRequestInterceptor.class);
     /**
      * 无需登录验证的请求集合
      */
-    private static final List<String> noLoginUriList;
+    private static List<String> noLoginUriList;
 
     static {
         noLoginUriList = new ArrayList<>();

@@ -19,7 +19,7 @@ import javax.validation.ConstraintViolationException;
  */
 @ControllerAdvice
 public class MyExceptionResolver {
-    private static final Logger log = LoggerFactory.getLogger(MyExceptionResolver.class);
+    private static Logger log = LoggerFactory.getLogger(MyExceptionResolver.class);
 
     @ExceptionHandler(NoLoginException.class)
     @ResponseBody
