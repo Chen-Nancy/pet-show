@@ -1,4 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nancy.petshow.mapper.UserMapper">
+    <resultMap id="userMap" type="com.nancy.petshow.entity.User">
+        <id column="id" property="id"/>
+        <result column="avatar_url" property="avatarUrl"/>
+        <result column="nick_name" property="nickName"/>
+        <result column="gender" property="gender"/>
+        <result column="country" property="country"/>
+        <result column="province" property="province"/>
+        <result column="city" property="city"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <select id="selectUserId" resultType="java.lang.Long" parameterType="string">
+        select id from user where open_id = #{openId} limit 1
+    </select>
+    <insert id="addUserInfo" parameterType="com.nancy.petshow.entity.User" useGeneratedKeys="true" keyProperty="id">
+        insert into user(id,open_id,create_time) values(null,#{openId},#{createTime})
+    </insert>
+    <update id="updateUserInfo" parameterType="com.nancy.petshow.entity.User">
+        update user set
+        <trim suffixOverrides=",">
+            <if test="sessionKey != null and sessionKey != ''">
+                session_key = #{sessionKey},
+            </if>
+            <if test="avatarUrl != null and avatarUrl != ''">
+                avatar_url = #{avatarUrl},
+            </if>
+            <if test="nickName != null and nickName != ''">
+                nick_name = #{nickName},
+            </if>
+            <if test="gender != null">
+                gender = #{gender},
+            </if>
+            <if test="country != null and country != ''">
+                country = #{country},
+            </if>
+            <if test="province != null and province != ''">
+                province = #{province},
+            </if>
+            <if test="city != null and city != ''">
+                city = #{city},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+    <select id="selectUserInfo" resultMap="userMap" parameterType="long">
+        select
+        id, avatar_url, nick_name, gender, country, province, city, create_time, update_time
+        from user where id = #{id}
+    </select>
 </mapper>

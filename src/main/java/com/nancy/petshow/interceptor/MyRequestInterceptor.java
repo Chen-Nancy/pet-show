@@ -2,16 +2,18 @@ package com.nancy.petshow.interceptor;
 
 import com.nancy.petshow.constants.UriConstants;
 import com.nancy.petshow.exception.NoLoginException;
+import com.nancy.petshow.util.RedisUtil;
+import com.nancy.petshow.util.TokenUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 
 /**
@@ -25,6 +27,8 @@ public class MyRequestInterceptor implements HandlerInterceptor {
      * 无需登录验证的请求集合
      */
     private static List<String> noLoginUriList;
+    @Resource
+    private RedisUtil redisUtil;
 
     static {
         noLoginUriList = new ArrayList<>();
@@ -46,15 +50,16 @@ public class MyRequestInterceptor implements HandlerInterceptor {
                 return true;
             }
         }
-        throw new NoLoginException("未登录");
         //进行登录验证
-//        Enumeration<String> headerNames = request.getHeaderNames();
-//        while (headerNames.hasMoreElements()) {
-//            String key = headerNames.nextElement();
-//            String value = request.getHeader(key);
-//            System.out.println(key + "=" + value);
-//        }
-//        return true;
+        String token = TokenUtil.getToken(request);
+        if (token == null) {
+            throw new NoLoginException("未登录");
+        }
+        Boolean flag = redisUtil.hasKey(token);
+        if (flag) {
+            return true;
+        }
+        throw new NoLoginException("未登录");
     }
 
     @Override

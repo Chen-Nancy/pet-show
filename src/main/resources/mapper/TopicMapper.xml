@@ -1,4 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nancy.petshow.mapper.TopicMapper">
+    <resultMap id="topicMap" type="com.nancy.petshow.entity.Topic">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="title" property="title"/>
+        <result column="value" property="value"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+        <result column="avatar_url" property="userAvatarUrl"/>
+        <result column="nick_name" property="userNickName"/>
+        <result column="like_num" property="likeNum"/>
+        <result column="dislike_num" property="dislikeNum"/>
+        <collection property="pictureList" ofType="java.lang.String">
+            <result column="img"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectTopicList" resultMap="topicMap">
+        select t.id,t.user_id,t.title,t.value,t.create_time,t.update_time,t.status,
+        u.avatar_url,u.nick_name,tl.like_num,td.dislike_num,tp.img
+        from topic t
+        left join user u on t.user_id = u.id
+        left join (select topic_id,count(id) like_num from topic_like where type = 1 group by topic_id) tl on t.id = tl.topic_id
+        left join (select topic_id,count(id) dislike_num from topic_like where type = 0 group by topic_id) td on t.id = td.topic_id
+        left join topic_picture tp on t.id = tp.topic_id
+        where t.status = 0
+    </select>
+    <select id="selectTopicInfo" resultMap="topicMap" parameterType="map">
+        select t.id,t.user_id,t.title,t.value,t.create_time,t.update_time,t.status,
+        u.avatar_url,u.nick_name,tl.like_num,td.dislike_num,tp.img
+        from topic t
+        left join user u on t.user_id = u.id
+        left join (select topic_id,count(id) like_num from topic_like where type = 1 group by topic_id)
+        tl on t.id = tl.topic_id
+        left join (select topic_id,count(id) dislike_num from topic_like where type = 0 group by topic_id)
+        td on t.id = td.topic_id
+        left join topic_picture tp on t.id = tp.topic_id
+        left join comment c1 on t.id = c1.topic_id
+        left join user u1 on c1.user_id = u1.id
+        left join comment c2 on c1.id = c2.parent_id
+        left join user u2 on c2.user_id = u2.id
+        left join user u3 on c2.to_user_id = u3.id
+        where t.id = #{id} and t.status = 0
+    </select>
 </mapper>

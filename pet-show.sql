@@ -11,7 +11,7 @@
  Target Server Version : 50645
  File Encoding         : 65001
 
- Date: 14/05/2020 18:02:40
+ Date: 15/05/2020 19:57:19
 */
 
 SET NAMES utf8mb4;
@@ -55,6 +55,7 @@ CREATE TABLE `topic`  (
   `value` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '内容',
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+  `status` tinyint(4) NULL DEFAULT 0 COMMENT '状态：0存在、1删除',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
