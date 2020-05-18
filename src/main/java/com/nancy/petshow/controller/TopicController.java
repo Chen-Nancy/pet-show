@@ -29,7 +29,7 @@ public class TopicController {
     @RequestMapping("selectTopicList")
     @ResponseBody
     public Result selectTopicList() {
-
+        return null;
     }
 
     /**
@@ -42,7 +42,7 @@ public class TopicController {
     @RequestMapping("selectTopicInfo")
     @ResponseBody
     public Result selectTopicInfo(HttpServletRequest request, @NotNull Long topicId) {
-
+        return null;
     }
 
     /**
@@ -57,7 +57,7 @@ public class TopicController {
     @RequestMapping("addTopicInfo")
     @ResponseBody
     public Result addTopicInfo(HttpServletRequest request, String title, String value, String[] pictureList) {
-
+        return null;
     }
 
     /**
@@ -73,7 +73,7 @@ public class TopicController {
     @RequestMapping("updateTopicInfo")
     @ResponseBody
     public Result updateTopicInfo(HttpServletRequest request, @NotNull Long topicId, String title, String value, String[] pictureList) {
-
+        return null;
     }
 
     /**
@@ -86,7 +86,7 @@ public class TopicController {
     @RequestMapping("deleteTopicInfo")
     @ResponseBody
     public Result deleteTopicInfo(HttpServletRequest request, @NotNull Long topicId) {
-
+        return null;
     }
 
     /**
@@ -101,6 +101,6 @@ public class TopicController {
     @RequestMapping("operateTopic")
     @ResponseBody
     public Result operateTopic(HttpServletRequest request, @NotNull Long topicId, @NotNull Byte type, @NotNull Byte status) {
-
+        return null;
     }
 }

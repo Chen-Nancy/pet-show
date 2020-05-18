@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nancy.petshow.mapper.CommentMapper">
+    <insert id="addCommentInfo" parameterType="com.nancy.petshow.entity.Comment"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into comment(id,user_id,`value`,topic_id,parent_id,to_user_id,create_time)
+        values(null,#{userId},#{value},#{topicId},#{parentId},#{toUserId},#{createTime})
+    </insert>
+    <insert id="addCommentLike" parameterType="map">
+        insert into comment_like(id,user_id,comment_id,`type`) values(null,#{userId},#{commentId},#{type})
+    </insert>
+    <delete id="deleteCommentLike" parameterType="map">
+        delete from comment_like where user_id = #{userId} and comment_id = #{commentId}
+    </delete>
 </mapper>
