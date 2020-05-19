@@ -14,13 +14,13 @@
     </resultMap>
 
     <select id="selectUserId" resultType="java.lang.Long" parameterType="string">
-        select id from user where open_id = #{openId} limit 1
+        select id from `user` where open_id = #{openId} limit 1
     </select>
     <insert id="addUserInfo" parameterType="com.nancy.petshow.entity.User" useGeneratedKeys="true" keyProperty="id">
-        insert into user(id,open_id,create_time) values(null,#{openId},#{createTime})
+        insert into `user`(id,open_id,create_time) values(null,#{openId},#{createTime})
     </insert>
     <update id="updateUserInfo" parameterType="com.nancy.petshow.entity.User">
-        update user set
+        update `user` set
         <trim suffixOverrides=",">
             <if test="sessionKey != null and sessionKey != ''">
                 session_key = #{sessionKey},
@@ -52,6 +52,6 @@
     <select id="selectUserInfo" resultMap="userMap" parameterType="long">
         select
         id, avatar_url, nick_name, gender, country, province, city, create_time, update_time
-        from user where id = #{id}
+        from `user` where id = #{id}
     </select>
 </mapper>

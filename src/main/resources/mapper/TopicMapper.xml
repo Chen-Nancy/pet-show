@@ -13,8 +13,42 @@
         <result column="nick_name" property="userNickName"/>
         <result column="like_num" property="likeNum"/>
         <result column="dislike_num" property="dislikeNum"/>
+        <result column="is_like" property="isLike"/>
+        <result column="is_dislike" property="isDislike"/>
         <collection property="pictureList" ofType="java.lang.String">
             <result column="img"/>
+        </collection>
+        <collection property="commentList" ofType="com.nancy.petshow.entity.Comment">
+            <id column="c1_id" property="id"/>
+            <result column="c1_user_id" property="userId"/>
+            <result column="c1_value" property="value"/>
+            <result column="c1_topic_id" property="topicId"/>
+            <result column="c1_parent_id" property="parentId"/>
+            <result column="c1_to_user_id" property="toUserId"/>
+            <result column="c1_create_time" property="createTime"/>
+            <result column="u1_avatar_url" property="userAvatarUrl"/>
+            <result column="u1_nick_name" property="userNickName"/>
+            <result column="c1_like_num" property="likeNum"/>
+            <result column="c1_dislike_num" property="dislikeNum"/>
+            <result column="c1_is_like" property="isLike"/>
+            <result column="c1_is_dislike" property="isDislike"/>
+            <collection property="commentList" ofType="com.nancy.petshow.entity.Comment">
+                <id column="c2_id" property="id"/>
+                <result column="c2_user_id" property="userId"/>
+                <result column="c2_value" property="value"/>
+                <result column="c2_topic_id" property="topicId"/>
+                <result column="c2_parent_id" property="parentId"/>
+                <result column="c2_to_user_id" property="toUserId"/>
+                <result column="c2_create_time" property="createTime"/>
+                <result column="u2_avatar_url" property="userAvatarUrl"/>
+                <result column="u2_nick_name" property="userNickName"/>
+                <result column="u3_avatar_url" property="toUserAvatarUrl"/>
+                <result column="u3_nick_name" property="toUserNickName"/>
+                <result column="c2_like_num" property="likeNum"/>
+                <result column="c2_dislike_num" property="dislikeNum"/>
+                <result column="c2_is_like" property="isLike"/>
+                <result column="c2_is_dislike" property="isDislike"/>
+            </collection>
         </collection>
     </resultMap>
 
@@ -22,27 +56,93 @@
         select t.id,t.user_id,t.title,t.value,t.create_time,t.update_time,t.status,
         u.avatar_url,u.nick_name,tl.like_num,td.dislike_num,tp.img
         from topic t
-        left join user u on t.user_id = u.id
-        left join (select topic_id,count(id) like_num from topic_like where type = 1 group by topic_id) tl on t.id = tl.topic_id
-        left join (select topic_id,count(id) dislike_num from topic_like where type = 0 group by topic_id) td on t.id = td.topic_id
+        left join `user` u on t.user_id = u.id
+        left join (select topic_id,count(id) like_num from topic_like where `type` = 1 group by topic_id) tl on t.id = tl.topic_id
+        left join (select topic_id,count(id) dislike_num from topic_like where `type` = 0 group by topic_id) td on t.id = td.topic_id
         left join topic_picture tp on t.id = tp.topic_id
-        where t.status = 0
+        where t.status = 0 order by create_time,update_time desc
     </select>
     <select id="selectTopicInfo" resultMap="topicMap" parameterType="map">
         select t.id,t.user_id,t.title,t.value,t.create_time,t.update_time,t.status,
-        u.avatar_url,u.nick_name,tl.like_num,td.dislike_num,tp.img
+        u.avatar_url,u.nick_name,tl.like_num,td.dislike_num,tp.img,
+        case til.topic_id when null then 0 else 1 end is_like,case tid.topic_id when null then 0 else 1 end is_dislike,
+        c1.id c1_id,c1.user_id c1_user_id,c1.value c1_value,c1.topic_id c1_topic_id,c1.parent_id c1_parent_id,c1.to_user_id c1_to_user_id,c1.create_time c1_create_time,
+        u1.avatar_url u1_avatar_url,u1.nick_name u1_nick_name,cl1.like_num c1_like_num,cd1.dislike_num c1_dislike_num,
+        case cil1.comment_id when null then 0 else 1 end c1_is_like,case cid1.comment_id when null then 0 else 1 end c1_is_dislike,
+        c2.id c2_id,c2.user_id c2_user_id,c2.value c2_value,c2.topic_id c2_topic_id,c2.parent_id c2_parent_id,c2.to_user_id c2_to_user_id,c2.create_time c2_create_time,
+        u2.avatar_url u2_avatar_url,u2.nick_name u2_nick_name,u3.avatar_url u3_avatar_url,u3.nick_name u3_nick_name,cl2.like_num c2_like_num,cd2.dislike_num c2_dislike_num,
+        case cil2.comment_id when null then 0 else 1 end c2_is_like,case cid2.comment_id when null then 0 else 1 end c2_is_dislike
         from topic t
-        left join user u on t.user_id = u.id
-        left join (select topic_id,count(id) like_num from topic_like where type = 1 group by topic_id)
+        left join `user` u on t.user_id = u.id
+        left join (select topic_id,count(id) like_num from topic_like where `type` = 1 group by topic_id)
         tl on t.id = tl.topic_id
-        left join (select topic_id,count(id) dislike_num from topic_like where type = 0 group by topic_id)
+        left join (select topic_id,count(id) dislike_num from topic_like where `type` = 0 group by topic_id)
         td on t.id = td.topic_id
+        left join (select topic_id from topic_like where `type` = 1 and user_id = #{userId})
+        til on t.id = til.topic_id
+        left join (select topic_id from topic_like where `type` = 0 and user_id = #{userId})
+        tid on t.id = tid.topic_id
         left join topic_picture tp on t.id = tp.topic_id
         left join comment c1 on t.id = c1.topic_id
-        left join user u1 on c1.user_id = u1.id
+        left join `user` u1 on c1.user_id = u1.id
+        left join (select comment_id,count(id) like_num from comment_like where `type` = 1 grop by comment_id)
+        cl1 on c1.id = cl1.comment_id
+        left join (select comment_id,count(id) dislike_num from comment_like where `type` = 0 grop by comment_id)
+        cd1 on c1.id = cd1.comment_id
+        left join (select comment_id from comment_like where `type` = 1 and user_id = #{userId})
+        cil1 on c1.id = cil1.comment_id
+        left join (select comment_id from comment_like where `type` = 0 and user_id = #{userId})
+        cid1 on c1.id = cid1.comment_id
         left join comment c2 on c1.id = c2.parent_id
-        left join user u2 on c2.user_id = u2.id
-        left join user u3 on c2.to_user_id = u3.id
-        where t.id = #{id} and t.status = 0
+        left join `user` u2 on c2.user_id = u2.id
+        left join `user` u3 on c2.to_user_id = u3.id
+        left join (select comment_id,count(id) like_num from comment_like where `type` = 1 grop by comment_id)
+        cl2 on c2.id = cl2.comment_id
+        left join (select comment_id,count(id) dislike_num from comment_like where `type` = 0 grop by comment_id)
+        cd2 on c2.id = cd2.comment_id
+        left join (select comment_id from comment_like where `type` = 1 and user_id = #{userId})
+        cil2 on c2.id = cil2.comment_id
+        left join (select comment_id from comment_like where `type` = 0 and user_id = #{userId})
+        cid2 on c2.id = cid2.comment_id
+        where t.id = #{id} and t.status = 0 and (c1.parent_id = 0 || c1.parent_id is null)
+        order by create_time,update_time,c1_create_time,c2_create_time desc
     </select>
+    <insert id="addTopicInfo" parameterType="com.nancy.petshow.entity.Topic"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into topic(id,user_id,title,`value`,create_time,status)
+        values(null,#{userId},#{title},#{value},#{createTime},default)
+    </insert>
+    <update id="updateTopicInfo" parameterType="com.nancy.petshow.entity.Topic">
+        update topic set
+        <trim suffixOverrides=",">
+            <if test="title != null and title != ''">
+                title = #{title},
+            </if>
+            <if test="value != null and value != ''">
+                `value` = #{value},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+    <update id="deleteTopicInfo" parameterType="map">
+        update topic set status = 1 where id = #{id} and user_id = #{userId}
+    </update>
+    <insert id="addTopicPicture" parameterType="map">
+        insert into topic_picture(id,topic_id,img) values
+        <foreach collection="pictureList" separator="," item="picture">
+            (null,#{topicId},#{picture})
+        </foreach>
+    </insert>
+    <delete id="deleteTopicPicture" parameterType="long">
+        delete from topic_picture where topic_id = #{topicId}
+    </delete>
+    <insert id="addTopicLike" parameterType="map">
+        insert into topic_like(id,user_id,topic_id,`type`) values(null,#{userId},#{topicId},#{type})
+    </insert>
+    <delete id="deleteTopicLike" parameterType="map">
+        delete from topic_like where user_id = #{userId} and topic_id = #{topicId}
+    </delete>
 </mapper>
