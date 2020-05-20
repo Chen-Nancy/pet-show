@@ -25,7 +25,7 @@ public interface TopicMapper {
      * @param map id帖子id userId用户id
      * @return
      */
-    List<Topic> selectTopicInfo(Map<String, Object> map);
+    Topic selectTopicInfo(Map<String, Object> map);
 
     /**
      * 添加帖子信息

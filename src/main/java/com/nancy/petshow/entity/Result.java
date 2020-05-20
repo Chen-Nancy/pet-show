@@ -1,5 +1,7 @@
 package com.nancy.petshow.entity;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -13,25 +15,30 @@ import java.util.List;
 @Data
 @ToString
 @NoArgsConstructor
+@ApiModel(description = "通用响应返回对象")
 public class Result {
     /**
      * 响应的状态码
      */
+    @ApiModelProperty(value = "响应的状态码：200-成功、202-失败、400-未登录、404-资源不存在、500-系统错误、505-参数错误")
     private int code;
 
     /**
      * 响应的提示语
      */
+    @ApiModelProperty(value = "响应的提示语")
     private String msg;
 
     /**
      * 响应的对象数据
      */
+    @ApiModelProperty(value = "响应的实体类对象")
     private Object object;
 
     /**
      * 响应的集合数据
      */
+    @ApiModelProperty(value = "响应的集合数据")
     private List<Object> list;
 
     public Result(int code, String msg) {
