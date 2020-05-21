@@ -17,7 +17,7 @@
         select id from `user` where open_id = #{openId} limit 1
     </select>
     <insert id="addUserInfo" parameterType="com.nancy.petshow.entity.User" useGeneratedKeys="true" keyProperty="id">
-        insert into `user`(id,open_id,create_time) values(null,#{openId},#{createTime})
+        insert into `user`(id,open_id,create_time,update_time) values(null,#{openId},#{createTime},#{updateTime})
     </insert>
     <update id="updateUserInfo" parameterType="com.nancy.petshow.entity.User">
         update `user` set

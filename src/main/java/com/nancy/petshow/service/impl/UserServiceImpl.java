@@ -28,7 +28,9 @@ public class UserServiceImpl implements UserService {
     public Long addUserInfo(String openId) {
         User user = new User();
         user.setOpenId(openId);
-        user.setCreateTime(new Date());
+        Date date = new Date();
+        user.setCreateTime(date);
+        user.setUpdateTime(date);
         userMapper.addUserInfo(user);
         return user.getId();
     }

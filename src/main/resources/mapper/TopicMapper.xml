@@ -95,16 +95,18 @@
         case when tid.topic_id is null then 0 else 1 end is_dislike,
         c1.id c1_id,c1.user_id c1_user_id,c1.value c1_value,c1.topic_id c1_topic_id,c1.parent_id
         c1_parent_id,c1.to_user_id c1_to_user_id,c1.create_time c1_create_time,
-        u1.avatar_url u1_avatar_url,u1.nick_name u1_nick_name,ifnull(cl1.like_num,0)
-        c1_like_num,ifnull(cd1.dislike_num,0) c1_dislike_num,
-        case when cil1.comment_id is null then 0 else 1 end c1_is_like,
-        case when cid1.comment_id is null then 0 else 1 end c1_is_dislike,
+        u1.avatar_url u1_avatar_url,u1.nick_name u1_nick_name,
+        case when c1.id is null then null when cl1.like_num is null then 0 else cl1.like_num end c1_like_num,
+        case when c1.id is null then null when cd1.dislike_num is null then 0 else cd1.dislike_num end c1_dislike_num,
+        case when c1.id is null then null when cil1.comment_id is null then 0 else 1 end c1_is_like,
+        case when c1.id is null then null when cid1.comment_id is null then 0 else 1 end c1_is_dislike,
         c2.id c2_id,c2.user_id c2_user_id,c2.value c2_value,c2.topic_id c2_topic_id,c2.parent_id
         c2_parent_id,c2.to_user_id c2_to_user_id,c2.create_time c2_create_time,
-        u2.avatar_url u2_avatar_url,u2.nick_name u2_nick_name,u3.avatar_url u3_avatar_url,u3.nick_name
-        u3_nick_name,ifnull(cl2.like_num,0) c2_like_num,ifnull(cd2.dislike_num,0) c2_dislike_num,
-        case when cil2.comment_id is null then 0 else 1 end c2_is_like,
-        case when cid2.comment_id is null then 0 else 1 end c2_is_dislike
+        u2.avatar_url u2_avatar_url,u2.nick_name u2_nick_name,u3.avatar_url u3_avatar_url,u3.nick_name u3_nick_name,
+        case when c2.id is null then null when cl2.like_num is null then 0 else cl2.like_num end c2_like_num,
+        case when c2.id is null then null when cd2.dislike_num is null then 0 else cd2.dislike_num end c2_dislike_num,
+        case when c2.id is null then null when cil2.comment_id is null then 0 else 1 end c2_is_like,
+        case when c2.id is null then null when cid2.comment_id is null then 0 else 1 end c2_is_dislike
         from topic t
         left join `user` u on t.user_id = u.id
         left join (select topic_id,count(id) like_num from topic_like where `type` = 1 group by topic_id)
