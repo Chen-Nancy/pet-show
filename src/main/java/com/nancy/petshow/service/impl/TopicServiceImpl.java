@@ -41,9 +41,11 @@ public class TopicServiceImpl implements TopicService {
         topic.setUserId(userId);
         topic.setTitle(title);
         topic.setValue(value);
-        topic.setCreateTime(new Date());
+        Date date = new Date();
+        topic.setCreateTime(date);
+        topic.setUpdateTime(date);
         Integer flag = topicMapper.addTopicInfo(topic);
-        if (pictureList.length > 0) {
+        if (pictureList != null && pictureList.length > 0) {
             Map<String, Object> map = new HashMap<>(2);
             map.put("topicId", topic.getId());
             map.put("pictureList", pictureList);
@@ -62,7 +64,7 @@ public class TopicServiceImpl implements TopicService {
         topic.setValue(value);
         topic.setUpdateTime(new Date());
         Integer flag = topicMapper.updateTopicInfo(topic);
-        if (pictureList.length > 0) {
+        if (pictureList != null && pictureList.length > 0) {
             topicMapper.deleteTopicPicture(topicId);
             Map<String, Object> map = new HashMap<>(2);
             map.put("topicId", topic.getId());
@@ -89,6 +91,7 @@ public class TopicServiceImpl implements TopicService {
         map.put("userId", userId);
         map.put("topicId", topicId);
         if (status == 1) {
+            topicMapper.deleteTopicLike(map);
             map.put("type", type);
             flag = topicMapper.addTopicLike(map);
         } else {

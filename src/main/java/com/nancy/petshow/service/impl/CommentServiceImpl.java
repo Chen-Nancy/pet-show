@@ -41,6 +41,7 @@ public class CommentServiceImpl implements CommentService {
         map.put("userId", userId);
         map.put("commentId", commentId);
         if (status == 1) {
+            commentMapper.deleteCommentLike(map);
             map.put("type", type);
             flag = commentMapper.addCommentLike(map);
         } else {

@@ -7,6 +7,7 @@ import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -21,6 +22,7 @@ public class MyErrorController implements ErrorController {
         return UriConstants.ERROR_URI;
     }
 
+    @ApiIgnore
     @RequestMapping(UriConstants.ERROR_URI)
     @ResponseBody
     public void error(HttpServletResponse response) {

@@ -10,12 +10,15 @@ import com.nancy.petshow.util.HttpUtil;
 import com.nancy.petshow.util.ParameterUtil;
 import com.nancy.petshow.util.RedisUtil;
 import com.nancy.petshow.util.TokenUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +35,7 @@ import static com.nancy.petshow.util.JsonUtil.jsonToObject;
 @Controller
 @Validated
 @RequestMapping("user")
+@Api(tags = "用户操作接口")
 public class UserController {
     private static Logger log = LoggerFactory.getLogger(UserController.class);
     @Resource
@@ -46,7 +50,11 @@ public class UserController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("authorize")
+    @ApiOperation(value = "登录授权", notes = "/user/authorize", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "code", value = "微信code", required = true, paramType = "query", dataType = "string")
+    })
+    @PostMapping("authorize")
     @ResponseBody
     public Result authorize(@NotBlank String code) throws Exception {
         //访问微信接口进行授权
@@ -91,7 +99,17 @@ public class UserController {
      * @param city      城市
      * @return
      */
-    @RequestMapping("updateUserInfo")
+    @ApiOperation(value = "更新用户信息", notes = "/user/updateUserInfo", httpMethod = "PUT")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "authorize", value = "token", required = true, paramType = "header", dataType = "string"),
+            @ApiImplicitParam(name = "avatarUrl", value = "头像", required = false, paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "nickName", value = "昵称", required = false, paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "gender", value = "性别：0未知、1男、2女", required = false, paramType = "query", dataType = "byte"),
+            @ApiImplicitParam(name = "country", value = "国家", required = false, paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "province", value = "省份", required = false, paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "city", value = "城市", required = false, paramType = "query", dataType = "string")
+    })
+    @PutMapping("updateUserInfo")
     @ResponseBody
     public Result updateUserInfo(HttpServletRequest request, String avatarUrl, String nickName, Byte gender, String country, String province, String city) {
         String token = TokenUtil.getToken(request);
@@ -111,7 +129,11 @@ public class UserController {
      * @param request
      * @return
      */
-    @RequestMapping("selectUserInfo")
+    @ApiOperation(value = "查询用户信息", notes = "/user/selectUserInfo", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "authorize", value = "token", required = true, paramType = "header", dataType = "string")
+    })
+    @GetMapping("selectUserInfo")
     @ResponseBody
     public Result selectUserInfo(HttpServletRequest request) {
         String token = TokenUtil.getToken(request);

@@ -5,13 +5,19 @@ import com.nancy.petshow.constants.FileConstants;
 import com.nancy.petshow.entity.Result;
 import com.nancy.petshow.util.ParameterUtil;
 import com.nancy.petshow.util.UUIDUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,6 +33,7 @@ import java.nio.charset.StandardCharsets;
 @Controller
 @Validated
 @RequestMapping("file")
+@Api(tags = "文件操作接口")
 public class FileController {
     private static Logger log = LoggerFactory.getLogger(FileController.class);
 
@@ -37,6 +44,7 @@ public class FileController {
      * @param request
      * @throws IOException
      */
+    @ApiIgnore
     @RequestMapping("show/*/*")
     @ResponseBody
     public void show(HttpServletResponse response, HttpServletRequest request) throws IOException {
@@ -77,6 +85,7 @@ public class FileController {
      * @param request
      * @throws IOException
      */
+    @ApiIgnore
     @RequestMapping("download/*/*")
     @ResponseBody
     public void download(HttpServletResponse response, HttpServletRequest request) throws IOException {
@@ -123,7 +132,14 @@ public class FileController {
      * @return
      * @throws IOException
      */
-    @RequestMapping("upload")
+    @ApiOperation(value = "文件上传", notes = "/file/upload", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "authorize", value = "token", required = true, paramType = "header", dataType = "string"),
+            @ApiImplicitParam(name = "type", value = "类型：0展示文件、1可下载文件", required = true, paramType = "query", dataType = "byte"),
+            @ApiImplicitParam(name = "addressType", value = "分类：0用户图片、1帖子图片", required = true, paramType = "query", dataType = "byte"),
+            @ApiImplicitParam(name = "file", value = "文件", required = true, paramType = "query")
+    })
+    @PostMapping("upload")
     @ResponseBody
     public Result upload(@NotNull Byte type, @NotNull Byte addressType, @NotNull MultipartFile file) throws IOException {
         if (file == null || file.isEmpty()) {

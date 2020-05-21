@@ -64,19 +64,16 @@
     </select>
     <select id="selectTopicInfo" resultMap="topicMap" parameterType="map">
         select t.id,t.user_id,t.title,t.value,t.create_time,t.update_time,t.status,
-        u.avatar_url,u.nick_name,tl.like_num,td.dislike_num,tp.img,
-        case til.topic_id when null then 0 else 1 end is_like,case tid.topic_id when null then 0 else 1 end is_dislike,
-        c1.id c1_id,c1.user_id c1_user_id,c1.value c1_value,c1.topic_id c1_topic_id,c1.parent_id
-        c1_parent_id,c1.to_user_id c1_to_user_id,c1.create_time c1_create_time,
-        u1.avatar_url u1_avatar_url,u1.nick_name u1_nick_name,cl1.like_num c1_like_num,cd1.dislike_num c1_dislike_num,
-        case cil1.comment_id when null then 0 else 1 end c1_is_like,case cid1.comment_id when null then 0 else 1 end
-        c1_is_dislike,
-        c2.id c2_id,c2.user_id c2_user_id,c2.value c2_value,c2.topic_id c2_topic_id,c2.parent_id
-        c2_parent_id,c2.to_user_id c2_to_user_id,c2.create_time c2_create_time,
-        u2.avatar_url u2_avatar_url,u2.nick_name u2_nick_name,u3.avatar_url u3_avatar_url,u3.nick_name
-        u3_nick_name,cl2.like_num c2_like_num,cd2.dislike_num c2_dislike_num,
-        case cil2.comment_id when null then 0 else 1 end c2_is_like,case cid2.comment_id when null then 0 else 1 end
-        c2_is_dislike
+        u.avatar_url,u.nick_name,tp.img,ifnull(tl.like_num,0) like_num,ifnull(td.dislike_num,0) dislike_num,
+        case when til.topic_id is null then 0 else 1 end is_like,
+        case when tid.topic_id is null then 0 else 1 end is_dislike,
+        null as c1_id,null as c1_user_id,null as c1_value,null as c1_topic_id,null as c1_parent_id,
+        null as c1_to_user_id,null as c1_create_time,null as u1_avatar_url,null as u1_nick_name,
+        null as c1_like_num,null as c1_dislike_num,null as c1_is_like,null as c1_is_dislike,
+        null as c2_id,null as c2_user_id,null as c2_value,null as c2_topic_id,null as c2_parent_id,
+        null as c2_to_user_id,null as c2_create_time,null as u2_avatar_url,null as u2_nick_name,
+        null as u3_avatar_url,null as u3_nick_name,
+        null as c2_like_num,null as c2_dislike_num,null as c2_is_like,null as c2_is_dislike
         from topic t
         left join `user` u on t.user_id = u.id
         left join (select topic_id,count(id) like_num from topic_like where `type` = 1 group by topic_id)
@@ -88,11 +85,41 @@
         left join (select topic_id from topic_like where `type` = 0 and user_id = #{userId})
         tid on t.id = tid.topic_id
         left join topic_picture tp on t.id = tp.topic_id
+        where t.id = #{id} and t.status = 0
+
+        union all
+
+        select t.id,t.user_id,t.title,t.value,t.create_time,t.update_time,t.status,
+        u.avatar_url,u.nick_name,null as img,ifnull(tl.like_num,0) like_num,ifnull(td.dislike_num,0) dislike_num,
+        case when til.topic_id is null then 0 else 1 end is_like,
+        case when tid.topic_id is null then 0 else 1 end is_dislike,
+        c1.id c1_id,c1.user_id c1_user_id,c1.value c1_value,c1.topic_id c1_topic_id,c1.parent_id
+        c1_parent_id,c1.to_user_id c1_to_user_id,c1.create_time c1_create_time,
+        u1.avatar_url u1_avatar_url,u1.nick_name u1_nick_name,ifnull(cl1.like_num,0)
+        c1_like_num,ifnull(cd1.dislike_num,0) c1_dislike_num,
+        case when cil1.comment_id is null then 0 else 1 end c1_is_like,
+        case when cid1.comment_id is null then 0 else 1 end c1_is_dislike,
+        c2.id c2_id,c2.user_id c2_user_id,c2.value c2_value,c2.topic_id c2_topic_id,c2.parent_id
+        c2_parent_id,c2.to_user_id c2_to_user_id,c2.create_time c2_create_time,
+        u2.avatar_url u2_avatar_url,u2.nick_name u2_nick_name,u3.avatar_url u3_avatar_url,u3.nick_name
+        u3_nick_name,ifnull(cl2.like_num,0) c2_like_num,ifnull(cd2.dislike_num,0) c2_dislike_num,
+        case when cil2.comment_id is null then 0 else 1 end c2_is_like,
+        case when cid2.comment_id is null then 0 else 1 end c2_is_dislike
+        from topic t
+        left join `user` u on t.user_id = u.id
+        left join (select topic_id,count(id) like_num from topic_like where `type` = 1 group by topic_id)
+        tl on t.id = tl.topic_id
+        left join (select topic_id,count(id) dislike_num from topic_like where `type` = 0 group by topic_id)
+        td on t.id = td.topic_id
+        left join (select topic_id from topic_like where `type` = 1 and user_id = #{userId})
+        til on t.id = til.topic_id
+        left join (select topic_id from topic_like where `type` = 0 and user_id = #{userId})
+        tid on t.id = tid.topic_id
         left join comment c1 on t.id = c1.topic_id
         left join `user` u1 on c1.user_id = u1.id
-        left join (select comment_id,count(id) like_num from comment_like where `type` = 1 grop by comment_id)
+        left join (select comment_id,count(id) like_num from comment_like where `type` = 1 group by comment_id)
         cl1 on c1.id = cl1.comment_id
-        left join (select comment_id,count(id) dislike_num from comment_like where `type` = 0 grop by comment_id)
+        left join (select comment_id,count(id) dislike_num from comment_like where `type` = 0 group by comment_id)
         cd1 on c1.id = cd1.comment_id
         left join (select comment_id from comment_like where `type` = 1 and user_id = #{userId})
         cil1 on c1.id = cil1.comment_id
@@ -101,21 +128,21 @@
         left join comment c2 on c1.id = c2.parent_id
         left join `user` u2 on c2.user_id = u2.id
         left join `user` u3 on c2.to_user_id = u3.id
-        left join (select comment_id,count(id) like_num from comment_like where `type` = 1 grop by comment_id)
+        left join (select comment_id,count(id) like_num from comment_like where `type` = 1 group by comment_id)
         cl2 on c2.id = cl2.comment_id
-        left join (select comment_id,count(id) dislike_num from comment_like where `type` = 0 grop by comment_id)
+        left join (select comment_id,count(id) dislike_num from comment_like where `type` = 0 group by comment_id)
         cd2 on c2.id = cd2.comment_id
         left join (select comment_id from comment_like where `type` = 1 and user_id = #{userId})
         cil2 on c2.id = cil2.comment_id
         left join (select comment_id from comment_like where `type` = 0 and user_id = #{userId})
         cid2 on c2.id = cid2.comment_id
         where t.id = #{id} and t.status = 0 and (c1.parent_id = 0 || c1.parent_id is null)
-        order by create_time,update_time,c1_create_time,c2_create_time desc
+        order by update_time,c1_create_time,c2_create_time desc
     </select>
     <insert id="addTopicInfo" parameterType="com.nancy.petshow.entity.Topic"
             useGeneratedKeys="true" keyProperty="id">
-        insert into topic(id,user_id,title,`value`,create_time,status)
-        values(null,#{userId},#{title},#{value},#{createTime},default)
+        insert into topic(id,user_id,title,`value`,create_time,update_time,status)
+        values(null,#{userId},#{title},#{value},#{createTime},#{updateTime},default)
     </insert>
     <update id="updateTopicInfo" parameterType="com.nancy.petshow.entity.Topic">
         update topic set

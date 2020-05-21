@@ -12,7 +12,7 @@ public class ParameterUtil {
      * @return
      */
     public static boolean stringIsEmpty(String s) {
-        return s == null || "".equals(s);
+        return s == null || "".equals(s) || "null".equals(s);
     }
 
     /**
