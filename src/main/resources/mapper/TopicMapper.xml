@@ -60,7 +60,7 @@
         left join (select topic_id,count(id) like_num from topic_like where `type` = 1 group by topic_id) tl on t.id = tl.topic_id
         left join (select topic_id,count(id) dislike_num from topic_like where `type` = 0 group by topic_id) td on t.id = td.topic_id
         left join topic_picture tp on t.id = tp.topic_id
-        where t.status = 0 order by create_time,update_time desc
+        where t.status = 0 order by update_time desc
     </select>
     <select id="selectTopicInfo" resultMap="topicMap" parameterType="map">
         select t.id,t.user_id,t.title,t.value,t.create_time,t.update_time,t.status,
