@@ -53,6 +53,6 @@ public class MyExceptionResolver {
     @ResponseBody
     public Result exceptionResolver(Exception e) {
         log.error(e.getMessage(), e);
-        return new Result(CodeConstants.SYSTEM_ERROR_CODE, "系统错误");
+        return new Result(CodeConstants.SYSTEM_ERROR_CODE, e.getMessage());
     }
 }
