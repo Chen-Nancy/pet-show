@@ -12,9 +12,10 @@ public interface TopicService {
     /**
      * 查询帖子集合
      *
+     * @param userId 用户id
      * @return
      */
-    List<Topic> selectTopicList();
+    List<Topic> selectTopicList(Long userId);
 
     /**
      * 查询帖子信息

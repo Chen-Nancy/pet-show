@@ -8,7 +8,7 @@ public class FileConstants {
     /**
      * 文件保存地址
      */
-    public static final String FILE_SAVE_ADDRESS = "C:/Dpan/DownLoad/file/";
+    public static final String FILE_SAVE_ADDRESS = "/usr/local/pet-show/";
 
     /**
      * 用户头像保存地址

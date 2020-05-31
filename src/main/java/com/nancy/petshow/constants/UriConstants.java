@@ -21,11 +21,6 @@ public class UriConstants {
     public static final String FILE_DOWNLOAD_URI = "/file/download";
 
     /**
-     * 用户登录请求
-     */
-    public static final String LOGIN_URI = "/user/login";
-
-    /**
      * 用户授权请求
      */
     public static final String AUTHORIZE_URI = "/user/authorize";

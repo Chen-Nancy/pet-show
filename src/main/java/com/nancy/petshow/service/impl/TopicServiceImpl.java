@@ -22,8 +22,8 @@ public class TopicServiceImpl implements TopicService {
     private TopicMapper topicMapper;
 
     @Override
-    public List<Topic> selectTopicList() {
-        return topicMapper.selectTopicList();
+    public List<Topic> selectTopicList(Long userId) {
+        return topicMapper.selectTopicList(userId);
     }
 
     @Override

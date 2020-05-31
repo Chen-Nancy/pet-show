@@ -54,11 +54,19 @@
 
     <select id="selectTopicList" resultMap="topicMap">
         select t.id,t.user_id,t.title,t.value,t.create_time,t.update_time,t.status,
-        u.avatar_url,u.nick_name,tl.like_num,td.dislike_num,tp.img
+        u.avatar_url,u.nick_name,tp.img,ifnull(tl.like_num,0) like_num,ifnull(td.dislike_num,0) dislike_num,
+        case when til.topic_id is null then 0 else 1 end is_like,
+        case when tid.topic_id is null then 0 else 1 end is_dislike
         from topic t
         left join `user` u on t.user_id = u.id
-        left join (select topic_id,count(id) like_num from topic_like where `type` = 1 group by topic_id) tl on t.id = tl.topic_id
-        left join (select topic_id,count(id) dislike_num from topic_like where `type` = 0 group by topic_id) td on t.id = td.topic_id
+        left join (select topic_id,count(id) like_num from topic_like where `type` = 1 group by topic_id)
+        tl on t.id = tl.topic_id
+        left join (select topic_id,count(id) dislike_num from topic_like where `type` = 0 group by topic_id)
+        td on t.id = td.topic_id
+        left join (select topic_id from topic_like where `type` = 1 and user_id = #{userId})
+        til on t.id = til.topic_id
+        left join (select topic_id from topic_like where `type` = 0 and user_id = #{userId})
+        tid on t.id = tid.topic_id
         left join topic_picture tp on t.id = tp.topic_id
         where t.status = 0 order by update_time desc
     </select>

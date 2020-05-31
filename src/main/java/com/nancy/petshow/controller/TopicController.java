@@ -39,6 +39,7 @@ public class TopicController {
     /**
      * 查询帖子集合
      *
+     * @param request
      * @return
      */
     @ApiOperation(value = "查询帖子集合", notes = "/topic/selectTopicList", httpMethod = "GET")
@@ -47,8 +48,10 @@ public class TopicController {
     })
     @GetMapping("selectTopicList")
     @ResponseBody
-    public Result selectTopicList() {
-        List<Topic> topicList = topicService.selectTopicList();
+    public Result selectTopicList(HttpServletRequest request) {
+        String token = TokenUtil.getToken(request);
+        Long userId = Long.valueOf(String.valueOf(redisUtil.getString(token)));
+        List<Topic> topicList = topicService.selectTopicList(userId);
         log.info("查询帖子集合成功");
         return new Result(CodeConstants.SUCCESS_CODE, "操作成功", topicList);
     }

@@ -34,7 +34,6 @@ public class MyRequestInterceptor implements HandlerInterceptor {
         noLoginUriList = new ArrayList<>();
         noLoginUriList.add(UriConstants.FILE_SHOW_URI);
         noLoginUriList.add(UriConstants.FILE_DOWNLOAD_URI);
-        noLoginUriList.add(UriConstants.LOGIN_URI);
         noLoginUriList.add(UriConstants.AUTHORIZE_URI);
     }
 
