@@ -38,22 +38,17 @@ public class FileController {
     private static Logger log = LoggerFactory.getLogger(FileController.class);
 
     /**
-     * 图片展示
+     * 文件读取
      *
      * @param response
-     * @param request
+     * @param fileName
      * @throws IOException
      */
-    @ApiIgnore
-    @RequestMapping("show/*/*")
-    @ResponseBody
-    public void show(HttpServletResponse response, HttpServletRequest request) throws IOException {
+    private void fileRead(HttpServletResponse response, String fileName) throws IOException {
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
         try {
-            String uri = request.getRequestURI();
-            String imgName = uri.substring(FileConstants.FILE_SHOW_PRE.length());
-            String fileAddress = FileConstants.FILE_SAVE_ADDRESS + imgName;
+            String fileAddress = FileConstants.FILE_SAVE_ADDRESS + fileName;
             File file = new File(fileAddress);
             if (!file.exists()) {
                 return;
@@ -79,6 +74,22 @@ public class FileController {
     }
 
     /**
+     * 图片展示
+     *
+     * @param response
+     * @param request
+     * @throws IOException
+     */
+    @ApiIgnore
+    @RequestMapping("show/*/*")
+    @ResponseBody
+    public void show(HttpServletResponse response, HttpServletRequest request) throws IOException {
+        String uri = request.getRequestURI();
+        String fileName = uri.substring(FileConstants.FILE_SHOW_PRE.length());
+        fileRead(response, fileName);
+    }
+
+    /**
      * 文件下载
      *
      * @param response
@@ -89,38 +100,13 @@ public class FileController {
     @RequestMapping("download/*/*")
     @ResponseBody
     public void download(HttpServletResponse response, HttpServletRequest request) throws IOException {
-        BufferedInputStream bis = null;
-        BufferedOutputStream bos = null;
-        try {
-            String uri = URLDecoder.decode(request.getRequestURI(), "utf-8");
-            String fileName = uri.substring(FileConstants.FILE_DOWNLOAD_PRE.length());
-            //设置文件下载响应头
-            response.setHeader("content-type", "application/octet-stream");
-            response.setHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1));
-            //开始读取文件
-            String fileAddress = FileConstants.FILE_SAVE_ADDRESS + fileName;
-            File file = new File(fileAddress);
-            if (!file.exists()) {
-                return;
-            }
-            bis = new BufferedInputStream(new FileInputStream(file));
-            bos = new BufferedOutputStream(response.getOutputStream());
-            int read = -1;
-            byte[] bytes = new byte[1024];
-            while ((read = bis.read(bytes)) != -1) {
-                bos.write(bytes, 0, read);
-            }
-        } catch (IOException e) {
-            throw new IOException(e);
-        } finally {
-            if (bos != null) {
-                bos.flush();
-                bos.close();
-            }
-            if (bis != null) {
-                bis.close();
-            }
-        }
+        String uri = URLDecoder.decode(request.getRequestURI(), "utf-8");
+        String fileName = uri.substring(FileConstants.FILE_DOWNLOAD_PRE.length());
+        //设置文件下载响应头
+        response.setHeader("content-type", "application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1));
+        //开始读取文件
+        fileRead(response, fileName);
     }
 
     /**

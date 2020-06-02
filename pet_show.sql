@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : 127.0.0.1
+ Source Server         : localhost_3306
  Source Server Type    : MySQL
  Source Server Version : 50645
  Source Host           : localhost:3306
- Source Schema         : pet-show
+ Source Schema         : pet_show
 
  Target Server Type    : MySQL
  Target Server Version : 50645
  File Encoding         : 65001
 
- Date: 15/05/2020 19:57:19
+ Date: 02/06/2020 23:14:52
 */
 
 SET NAMES utf8mb4;
@@ -33,6 +33,10 @@ CREATE TABLE `comment`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
+-- Records of comment
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for comment_like
 -- ----------------------------
 DROP TABLE IF EXISTS `comment_like`;
@@ -43,6 +47,10 @@ CREATE TABLE `comment_like`  (
   `type` tinyint(4) NULL DEFAULT 0 COMMENT '操作类型：0点踩、1点赞',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Records of comment_like
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for topic
@@ -60,6 +68,10 @@ CREATE TABLE `topic`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
+-- Records of topic
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for topic_like
 -- ----------------------------
 DROP TABLE IF EXISTS `topic_like`;
@@ -72,6 +84,10 @@ CREATE TABLE `topic_like`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
+-- Records of topic_like
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for topic_picture
 -- ----------------------------
 DROP TABLE IF EXISTS `topic_picture`;
@@ -81,6 +97,10 @@ CREATE TABLE `topic_picture`  (
   `img` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '图片',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Records of topic_picture
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for user
@@ -100,5 +120,9 @@ CREATE TABLE `user`  (
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Records of user
+-- ----------------------------
 
 SET FOREIGN_KEY_CHECKS = 1;
